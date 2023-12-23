@@ -1,37 +1,18 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { IsNotEmpty, IsString } from 'class-validator';
-
-// validation
-class SignupDto {
-  @IsNotEmpty()
-  @IsString()
-  username: string;
-
-  @IsNotEmpty()
-  @IsString()
-  password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  apikey: string;
-}
-
-class SigninDto {
-  username: string;
-  password: string;
-}
+import { SignupDto } from './dto/auth.signupDto';
+import { SigninDto } from './dto/auth.signinDto';
 
 @Controller('auth')
 export class AuthController {
   @Post('signup')
-  create(@Body() signupDto: SignupDto): string {
-    console.log(signupDto);
+  create(@Body() userData: SignupDto): string {
+    console.log(userData);
     return 'Data received successfully!';
   }
 
   @Post('signin')
-  login(@Body() signinDto: SigninDto): string {
-    console.log(signinDto);
+  login(@Body() userData: SigninDto): string {
+    console.log(userData);
     return 'Data received successfully!';
   }
 }
