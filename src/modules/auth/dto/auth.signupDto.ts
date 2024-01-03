@@ -11,5 +11,5 @@ export class SignupDto {
 
   @IsNotEmpty()
   @IsString()
-  apikey: string;
+  order_hashkey: string;
 }
