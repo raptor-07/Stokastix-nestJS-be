@@ -60,7 +60,5 @@ export class AuthController {
       });
       return token;
     }
-
-    return 'User logged in successfully! JWT passed in response header.';
   }
 }
