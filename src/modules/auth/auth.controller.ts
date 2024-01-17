@@ -22,7 +22,9 @@ export class AuthController {
       userData.password,
     );
 
-    const user = this.userService.findOne(userData.username, userData.password);
+    const user = await this.userService.findOne(userData.username);
+    console.log(user);
+
     if (user) {
       return 'Username already exists';
     }
@@ -38,14 +40,7 @@ export class AuthController {
 
   @Post('signin')
   async login(@Body() userData: SigninDto): Promise<string> {
-    if (!userData.username || !userData.password) {
-      return 'Missing username or password';
-    }
-
-    const user = await this.userService.findOne(
-      userData.username,
-      userData.password,
-    );
+    const user = await this.userService.findOne(userData.username);
 
     if (!user) {
       return 'User not found, please check your username and password';
@@ -54,30 +49,18 @@ export class AuthController {
     if (
       await this.hashService.comparePassword(userData.password, user.password)
     ) {
-      const token = this.jwtService.generateToken({
+      const token = await this.jwtService.generateToken({
         username: user.username,
       });
       return token;
     } else {
-      return 'Password is incorrect';
+      return 'Password or username is incorrect';
     }
   }
 
-  @Post('update_keys')
+  @Post('update-keys')
   async update(@Body() userData: updateDto): Promise<string> {
-    if (
-      !userData.username ||
-      !userData.password ||
-      !userData.binance_api_key ||
-      !userData.order_hashkey
-    ) {
-      return 'information missing';
-    }
-
-    const user = await this.userService.findOne(
-      userData.username,
-      userData.password,
-    );
+    const user = await this.userService.findOne(userData.username);
 
     if (!user) {
       return 'User not found, please check your username and password';

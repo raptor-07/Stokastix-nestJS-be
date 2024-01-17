@@ -26,18 +26,17 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async findOne(username: string, password: string): Promise<User | undefined> {
+  async findOne(username: string): Promise<User | undefined> {
     try {
       const user = await this.userRepository.findOne({ where: { username } });
 
-      if (user && user.password === password) {
+      if (user) {
         return user;
       }
 
       return undefined;
     } catch (error) {
       console.error('Error finding user:', error.message);
-      throw new Error('Failed to find user: password is incorrect');
     }
   }
 

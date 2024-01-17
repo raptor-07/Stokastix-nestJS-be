@@ -5,16 +5,16 @@ dotenvConfig();
 
 @Injectable()
 export class JwtService {
-  private readonly JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-  private readonly JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME;
+  JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+  JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME;
 
-  generateToken(payload: any) {
-    return jwt.sign(payload, this.JWT_SECRET_KEY, {
+  async generateToken(payload: any) {
+    return await jwt.sign(payload, this.JWT_SECRET_KEY, {
       expiresIn: this.JWT_EXPIRATION_TIME,
     });
   }
 
-  verifyToken(token: string) {
-    return jwt.verify(token, this.JWT_SECRET_KEY);
+  async verifyToken(token: string) {
+    return await jwt.verify(token, this.JWT_SECRET_KEY);
   }
 }
