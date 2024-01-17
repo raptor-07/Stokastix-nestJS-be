@@ -14,12 +14,15 @@ export class UserService {
     username: string,
     password: string,
     order_hashkey: string,
+    binance_api_key: string,
   ): Promise<User> {
     const user = this.userRepository.create({
       username,
       password,
       order_hashkey,
+      binance_api_key,
     });
+
     return this.userRepository.save(user);
   }
 
@@ -36,5 +39,17 @@ export class UserService {
       console.error('Error finding user:', error.message);
       throw new Error('Failed to find user: password is incorrect');
     }
+  }
+
+  async updateUserKeys(
+    username: string,
+    order_hashkey: string,
+    binance_api_key: string,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { username } });
+    user.order_hashkey = order_hashkey;
+    user.binance_api_key = binance_api_key;
+
+    return this.userRepository.save(user);
   }
 }

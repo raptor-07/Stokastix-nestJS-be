@@ -1,6 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { SignupDto } from './dto/auth.signupDto';
 import { SigninDto } from './dto/auth.signinDto';
+import { updateDto } from './dto/auth.updateDto';
 import { UserService } from '../db/users/user.service';
 import { HashService } from './hash/hash.service';
 import { JwtService } from './jwt/jwt.service';
@@ -16,14 +17,21 @@ export class AuthController {
   @Post('signup')
   async create(@Body() userData: SignupDto): Promise<string> {
     console.log(userData);
+
     const hashedPassword = await this.hashService.hashPassword(
       userData.password,
     );
 
+    const user = this.userService.findOne(userData.username, userData.password);
+    if (user) {
+      return 'Username already exists';
+    }
+
     await this.userService.createUser(
       userData.username,
-      userData.password,
       hashedPassword,
+      userData.order_hashkey,
+      userData.binance_api_key,
     );
     return 'Account made Successfully!';
   }
@@ -44,21 +52,48 @@ export class AuthController {
     }
 
     if (
-      !(await this.hashService.comparePassword(
-        userData.password,
-        user.password,
-      ))
-    ) {
-      return 'Password is incorrect';
-    }
-
-    if (
       await this.hashService.comparePassword(userData.password, user.password)
     ) {
       const token = this.jwtService.generateToken({
         username: user.username,
       });
       return token;
+    } else {
+      return 'Password is incorrect';
+    }
+  }
+
+  @Post('update_keys')
+  async update(@Body() userData: updateDto): Promise<string> {
+    if (
+      !userData.username ||
+      !userData.password ||
+      !userData.binance_api_key ||
+      !userData.order_hashkey
+    ) {
+      return 'information missing';
+    }
+
+    const user = await this.userService.findOne(
+      userData.username,
+      userData.password,
+    );
+
+    if (!user) {
+      return 'User not found, please check your username and password';
+    }
+
+    if (
+      await this.hashService.comparePassword(userData.password, user.password)
+    ) {
+      await this.userService.updateUserKeys(
+        userData.username,
+        userData.order_hashkey,
+        userData.binance_api_key,
+      );
+      return 'Keys updated Successfully!';
+    } else {
+      return 'Password is incorrect';
     }
   }
 }

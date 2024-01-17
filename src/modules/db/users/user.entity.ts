@@ -10,4 +10,7 @@ export class User {
 
   @Column()
   order_hashkey: string;
+
+  @Column()
+  binance_api_key: string;
 }
