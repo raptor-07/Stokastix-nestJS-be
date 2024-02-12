@@ -79,4 +79,15 @@ export class AuthController {
       return 'Password is incorrect';
     }
   }
+
+  @Post('/verify-login')
+  async JWTverify(@Body() data: any): Promise<boolean> {
+    try {
+      // console.log(data.token);
+      if (await this.jwtService.verifyToken(data.token))
+        return JSON.parse('true');
+    } catch {
+      return JSON.parse('false');
+    }
+  }
 }
