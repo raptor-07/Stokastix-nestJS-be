@@ -6,6 +6,21 @@ import { UserService } from '../db/users/user.service';
 import { HashService } from './hash/hash.service';
 import { JwtService } from './jwt/jwt.service';
 
+interface SignupResponse {
+  result: boolean;
+  description: string;
+}
+
+interface SigninResponse {
+  result: boolean;
+  token: string;
+  description: string;
+}
+
+interface Verify {
+  result: boolean;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -15,35 +30,59 @@ export class AuthController {
   ) {}
 
   @Post('signup')
-  async create(@Body() userData: SignupDto): Promise<string> {
-    console.log(userData);
+  async create(@Body() userData: SignupDto): Promise<SignupResponse> {
+    let response: SignupResponse;
 
     const hashedPassword = await this.hashService.hashPassword(
       userData.password,
     );
 
     const user = await this.userService.findOne(userData.username);
-    console.log(user);
 
     if (user) {
-      return 'Username already exists';
+      response = {
+        result: false,
+        description: 'username is taken',
+      };
+      return response;
     }
 
-    await this.userService.createUser(
-      userData.username,
-      hashedPassword,
-      userData.order_hashkey,
-      userData.binance_api_key,
-    );
-    return 'Account made Successfully!';
+    try {
+      response = {
+        result: true,
+        description: 'Account created successfully. Login to continue',
+      };
+      await this.userService.createUser(
+        userData.username,
+        userData.email,
+        hashedPassword,
+        userData.BNCOrderKey,
+        userData.BNCAPIKey,
+      );
+      return response;
+    } catch {
+      response = {
+        result: false,
+        description: 'Error creating account. Try again later!',
+      };
+      return response;
+    }
   }
 
   @Post('signin')
-  async login(@Body() userData: SigninDto): Promise<string> {
+  async login(@Body() userData: SigninDto): Promise<SigninResponse> {
+    let response: SigninResponse;
+
     const user = await this.userService.findOne(userData.username);
 
     if (!user) {
-      return 'User not found, please check your username and password';
+      response = {
+        result: false,
+        token: '',
+        description: 'User not found, please check your username and password',
+      };
+
+      return response;
     }
 
     if (
@@ -52,9 +91,22 @@ export class AuthController {
       const token = await this.jwtService.generateToken({
         username: user.username,
       });
-      return token;
+
+      response = {
+        result: true,
+        token: token,
+        description: 'Logged in successfully',
+      };
+
+      return response;
     } else {
-      return 'Password or username is incorrect';
+      response = {
+        result: false,
+        token: '',
+        description: 'Password or username is incorrect',
+      };
+
+      return response;
     }
   }
 
@@ -81,13 +133,31 @@ export class AuthController {
   }
 
   @Post('/verify-login')
-  async JWTverify(@Body() data: any): Promise<boolean> {
+  async JWTverify(@Body() data: any): Promise<Verify> {
+    // console.log(data);
+    
+    let verify: Verify;
+
     try {
-      // console.log(data.token);
-      if (await this.jwtService.verifyToken(data.token))
-        return JSON.parse('true');
+      if (await this.jwtService.verifyToken(data.token)) {
+        verify = {
+          result: true,
+        };
+
+        return verify;
+      } else {
+        verify = {
+          result: false,
+        };
+
+        return verify;
+      }
     } catch {
-      return JSON.parse('false');
+      verify = {
+        result: false,
+      };
+
+      return verify;
     }
   }
 }

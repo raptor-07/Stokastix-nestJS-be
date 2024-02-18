@@ -12,12 +12,14 @@ export class UserService {
 
   async createUser(
     username: string,
+    email: string,
     password: string,
     order_hashkey: string,
     binance_api_key: string,
   ): Promise<User> {
     const user = this.userRepository.create({
       username,
+      email,
       password,
       order_hashkey,
       binance_api_key,

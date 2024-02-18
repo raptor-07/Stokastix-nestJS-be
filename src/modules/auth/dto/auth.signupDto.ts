@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class SignupDto {
   @IsNotEmpty()
@@ -7,13 +7,18 @@ export class SignupDto {
 
   @IsNotEmpty()
   @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
   password: string;
 
   @IsNotEmpty()
   @IsString()
-  order_hashkey: string;
+  BNCOrderKey: string;
 
   @IsNotEmpty()
   @IsString()
-  binance_api_key: string;
+  BNCAPIKey: string;
 }
