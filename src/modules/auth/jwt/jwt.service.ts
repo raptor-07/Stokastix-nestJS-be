@@ -15,6 +15,7 @@ export class JwtService {
   }
 
   async verifyToken(token: string) {
+    console.log(await jwt.verify(token, this.JWT_SECRET_KEY, "firsttt"));
     return await jwt.verify(token, this.JWT_SECRET_KEY);
   }
 }
