@@ -17,22 +17,3 @@ export class ConfigDto {
     startTime: string;
     endTime: string;
 }
-
-// config.botMode,
-// config.asset,
-// config.autoSwitch,
-// config.trendTf,
-// config.botSide,
-// config.indicator,
-// config.slTf,
-// config.entryTf,
-// config.exitTf,
-// config.exitMode,
-// config.alloc,
-// config.numOfTrades,
-// config.emaLength,
-// config.targetPrice,
-// config.maxLeverage,
-// "start",
-// config.startTime,
-// config.endTime
