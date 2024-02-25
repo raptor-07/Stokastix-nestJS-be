@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import getCurrentPosition from './getCurrentPosition';
 import placeNewMktOrder from './placeNewMktOrder';
 const axios = require("axios");

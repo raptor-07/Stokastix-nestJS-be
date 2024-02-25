@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import getOpenOrders from './getOpenOrders';
 import cancelOrder from './cancelOrder';
 

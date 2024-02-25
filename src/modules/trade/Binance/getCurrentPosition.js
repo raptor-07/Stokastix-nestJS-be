@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
 const axios = require("axios");
 const crypto = require("crypto");
 

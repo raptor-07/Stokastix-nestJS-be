@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { DbModule } from './modules/db/db.module';
 import { TradeModule } from './modules/trade/trade.module';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Module({
   imports: [AuthModule, DbModule, TradeModule],
